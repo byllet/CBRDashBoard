@@ -9,9 +9,6 @@ class Status(Enum):
     ERROR = 2
     EXIST = 3
 
-    def __init__(self):
-        self.__msg = ""
-
     def SetError(self, msg : str):
         self.__msg = msg
     

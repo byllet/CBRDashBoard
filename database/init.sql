@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS idk (
+    id SERIAL PRIMARY KEY,
+    payload VARCHAR(255)
+);
