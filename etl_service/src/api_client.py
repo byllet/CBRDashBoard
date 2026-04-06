@@ -7,7 +7,7 @@ from config import cbr_api_url
 
 class ApiClient:
     __url : str
-    def __init__(self, url : str):
+    def __init__(self, url: str = cbr_api_url ) -> List[Dict]:
         self.__url = url
     
     
@@ -22,7 +22,7 @@ class ApiClient:
         }'''
 
         request_publication =  requests.get(
-            f"{self.__url}/datasets?publicationId={requested_data["publicationId"]}"
+            "%s/datasets?publicationId=%d" % (self.__url, requested_data["publicationId"])
             ).json(object_hook=lambda d: SimpleNamespace(**d))
  
         if request_publication == []:
@@ -33,14 +33,14 @@ class ApiClient:
             raise RuntimeError("Выполнен запрос к публикации несуществующего показателя")
 
         request_measure = requests.get(
-            f"{self.__url}/measures?datasetId={requested_data["datasetId"]}"
+            "%s/measures?datasetId=%d" % (self.__url, requested_data["datasetId"])
             ).json(object_hook=lambda d: SimpleNamespace(**d)).measure
 
         if requested_data["measureId"] != -1 and request_measure == []:
             raise RuntimeError("Выполнен запрос к публикации по несуществующему разрезу")
         
         request_years = requests.get(
-            f"{self.__url}/years", params={"measureId" : requested_data["measureId"], "datasetId" : requested_data["datasetId"]}
+            ("%s/years" % self.__url), params={"measureId" : requested_data["measureId"], "datasetId" : requested_data["datasetId"]}
             ).json(object_hook=lambda d: SimpleNamespace(**d))[0] 
         
         '''Вариант с выбросом ошибки в случае несовпадения годов
@@ -60,31 +60,39 @@ class ApiClient:
             requested_data['y2'] = request_years.ToYear
 
         response_publication = requests.get(f"{self.__url}/data", params=requested_data)
-        return response_publication
+        return response_publication.json()["RawData"]
 
 
 def SaveJsonToFile(data, filename):
     with open(filename, 'w', encoding='utf8') as outfile:
         json.dump(data.json(), outfile, ensure_ascii=False, indent=4)
 
-example = ApiClient(cbr_api_url)
+def main():
+    example = ApiClient()
 
-currency_history = example.fetch({
-            "publicationId" : 34,
-            "datasetId" :  131,
-            "measureId" : 148
-        })
-deposit_history = example.fetch({
-            "publicationId" : 18,
-            "datasetId" : 37,
-            "measureId" : 2
-        })
-percent_history = example.fetch({
-            "publicationId" : 14,
-            "datasetId" : 29,
-            "measureId" : -1
-        })
-
-SaveJsonToFile(currency_history, "currency_history.json")
-SaveJsonToFile(deposit_history, "deposit_history.json")
-SaveJsonToFile(percent_history, "percent_history.json")
+    currency_history = example.fetch({
+                "publicationId" : 34,
+                "datasetId" :  131,
+                "measureId" : 148
+            })
+    deposit_history = example.fetch({
+                "publicationId" : 18,
+                "datasetId" : 37,
+                "measureId" : 2
+            })
+    percent_history = example.fetch({
+                "publicationId" : 14,
+                "datasetId" : 29,
+                "measureId" : -1
+            })
+    '''incorrect fetch
+    xx = example.fetch({ #incorrect
+                "publicationId" : 228,
+                "datasetId" : 56,
+                "measureId" : 78
+            })'''
+    #SaveJsonToFile(currency_history, "currency_history.json")
+    #SaveJsonToFile(deposit_history, "deposit_history.json")
+    #SaveJsonToFile(percent_history, "percent_history.json")
+if __name__ == '__main__':
+    main()
