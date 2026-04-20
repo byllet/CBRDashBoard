@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: CBR Analytics
+  version: 1.0.0
+
+paths:
+  /api/metrics:
+    get:
+      summary: Получить метрики
+      parameters:
+        - name: metric
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - currency_rates
+              - credits_stats
+              - money_aggregates
+              - deposit_rates
+              - loan_rates
+          description: Название метрики
+        - name: operation
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Название метрики
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Дата начала (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Дата окончания (YYYY-MM-DD)
+        - name: place
+          in: query
+          schema:
+            type: string
+          description: Место/регион
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: 'Parameter "metric" is required'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: 'Data not found for the specified parameters'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: 'Internal server error'
+          content:
+            text/plain:
+              schema:
+                type: string

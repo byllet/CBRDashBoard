@@ -1,0 +1,6 @@
+.env
+*.pyc
+error.log
+combined.log
+backend/node_modules/
+backend/package-lock.json

@@ -8,3 +8,5 @@
 ```bash
 npm install
 npm run dev
+docker network create cbr-network
+docker compose up --build
