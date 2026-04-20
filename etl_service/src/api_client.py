@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import requests
 import json 
 from types import SimpleNamespace
@@ -91,6 +90,7 @@ def main():
                 "datasetId" : 56,
                 "measureId" : 78
             })'''
+    print(percent_history[0])
     #SaveJsonToFile(currency_history, "currency_history.json")
     #SaveJsonToFile(deposit_history, "deposit_history.json")
     #SaveJsonToFile(percent_history, "percent_history.json")
