@@ -1,24 +1,19 @@
 from api_client import ApiClient
 from data_handler import DataHandler
 from repository import Repository
-import os
-import config
+from data_models import RequestedData
+from datetime import datetime
 import asyncpg
-import uvicorn
 import asyncio
 
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from dotenv import load_dotenv
 
 async def etl():
-    configs = [{
-                "publicationId" : 18,
-                "datasetId" :  37,
-                "measureId" : 2
-            }]
+    currency_request = RequestedData
+    currency_request.name = 'Курс валют'
+    currency_request.time_from = datetime(1984, 1 , 1)
+    currency_request.time_to = datetime(2100, 1, 1)
     extractor = ApiClient()
-    dirty_data = extractor.fetch(configs[0])
+    dirty_data = extractor.fetch(currency_request)
     handler = DataHandler()
     clean_data = handler.extract_data(dirty_data)
     pool = await asyncpg.create_pool(
