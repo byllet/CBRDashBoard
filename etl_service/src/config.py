@@ -1,1 +1,1 @@
-cbr_api_url = "www"
+cbr_api_url = "http://www.cbr.ru/dataservice"

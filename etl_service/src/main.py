@@ -13,7 +13,6 @@ from data_handler import DataHandler
 from repository import Repository
 from controller import create_app
 
-
 load_dotenv()
 
 
