@@ -4,7 +4,7 @@ class ETLClient extends IETLClient {
   constructor(logger) {
     super();
     this.logger = logger;
-    this.baseURL = process.env.ETL_SERVICE || 'http://localhost:15333';
+    this.baseURL = process.env.ETL_SERVICE_URL || 'http://localhost:15333';
   }
 
   async getMetrics(params) {
