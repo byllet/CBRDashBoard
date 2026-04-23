@@ -15,24 +15,6 @@ services:
     - ${NETWORK_NAME}
     restart: unless-stopped
 
-  backend:
-    build:
-      context: ./backend
-    container_name: ${BACKEND_CONTAINER_NAME}
-    environment:
-      PORT: ${BACKEND_PORT}
-      DB_HOST: ${DB_CONTAINER_NAME}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_NAME: ${POSTGRES_DB}
-    ports:
-    - "${BACKEND_PORT}:15001"
-    networks:
-    - ${NETWORK_NAME}
-    depends_on:
-    - database
-
   etl-service:
     build:
       context: ./etl_service
@@ -50,6 +32,26 @@ services:
     - ${NETWORK_NAME}
     depends_on:
     - database
+
+  backend:
+    build:
+      context: ./backend
+    container_name: ${BACKEND_CONTAINER_NAME}
+    environment:
+      PORT: ${BACKEND_PORT}
+      DB_HOST: ${DB_CONTAINER_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      ETL_SERVICE_URL: http://${ETL_CONTAINER_NAME}:${ETL_PORT}
+    ports:
+    - "${BACKEND_PORT}:15001"
+    networks:
+    - ${NETWORK_NAME}
+    depends_on:
+    - database
+    - etl-service
 
 networks:
   cbr-network:
