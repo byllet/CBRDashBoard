@@ -9,18 +9,18 @@ from datetime import datetime
 
 class ApiClient:
     __url : str
-    configs = {"Курс валют" : (33, 127, -1),
-                "Ставки по кредитам" : (14, 25, 2), 
-                "Статистика кредитования" : (20, 41, 22),
-                "Денежные агрегаты" : (5, 7, -1), 
-                "Ставки по депозитам" : (18, 37, 2)}
+    configs = {"currency_rates" : (33, 127, -1),
+                "credits_stats" : (14, 25, 2), 
+                "loan_rates" : (20, 41, 22),
+                "money_aggregates" : (5, 7, -1), 
+                "deposit_rates" : (18, 37, 2)}
     
     def __init__(self, url: str = cbr_api_url ) -> List[Dict]:
         self.__url = url
     
     
-    def fetch(self, requested_data : RequestedData) -> json:
-        
+    async def fetch(self, requested_data : RequestedData) -> json:
+
         config = self.configs[requested_data.name]
         params = {"publicationId" : config[0],
                 "datasetId" : config[1],

@@ -1,2 +1,7 @@
 .env
 *.pyc
+etl_service/src/__pycache__
+etl_service/.venv
+backend/node_modules
+.venv
+__pycache__
