@@ -13,29 +13,18 @@ from data_handler import DataHandler
 from repository import Repository
 from controller import create_app
 
-
 load_dotenv()
 
 
 @asynccontextmanager
 async def lifespan(app : FastAPI):
 
-    # pool = await asyncpg.create_pool(
-    #     host=os.getenv("DB_HOST"),
-    #     port=os.getenv("DB_PORT"),
-    #     database=os.getenv("DB_NAME"),
-    #     user=os.getenv("DB_USER"),
-    #     password=os.getenv("DB_PASSWORD"),
-    #     min_size=2,
-    #     max_size=10
-    # )
-    
     pool = await asyncpg.create_pool(
-        host="127.0.0.1",
-        port=5432,
-        database="cbr_db",
-        user="postgres",
-        password="password",
+        host=os.getenv("NETWORK_NAME"),
+        port=os.getenv("DB_PORT"),
+        database=os.getenv("POSTGRES_DB"),
+        user=os.getenv("POSTGRES_USER"),
+        password=os.getenv("POSTGRES_PASSWORD"),
         min_size=2,
         max_size=10
     )
@@ -58,8 +47,8 @@ def main():
 
     uvicorn.run(
         app,
-        host="127.0.0.1",  
-        port=15333,
+        host="0.0.0.0",  
+        port=int(os.getenv("ETL_PORT")),
         reload=False
     )
 

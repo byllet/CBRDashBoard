@@ -18,3 +18,6 @@ INSERT INTO economic_data (parameter_id, region_id, record_date, parameter_value
 (2, 1, '2024-01-15', 8.5),
 (1, 2, '2024-01-15', 980.75)"
 
+docker run -d --name cbr-db-container -p 5432:5432 cbr-db
+
+docker run -d --name cbr-db-container --network cbr-network -p 5432:5432 cbr-db
