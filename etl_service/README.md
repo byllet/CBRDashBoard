@@ -4,7 +4,12 @@ pip install -r requirements.txt
 
 deactivate
 
+docker build -t cbr-etl .
+docker run -d --name cbr-etl-container -p 15333:15333 cbr-etl
 
+docker run -d --name cbr-etl-container --network cbr-network -p 15333:15333 cbr-etl
+
+docker logs cbr-etl-container  
 
 curl -X POST "http://localhost:15333/api/v1/" \
   -H "Content-Type: application/json" \

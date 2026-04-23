@@ -20,7 +20,7 @@ load_dotenv()
 async def lifespan(app : FastAPI):
 
     pool = await asyncpg.create_pool(
-        host=os.getenv("DB_HOST"),
+        host=os.getenv("NETWORK_NAME"),
         port=os.getenv("DB_PORT"),
         database=os.getenv("POSTGRES_DB"),
         user=os.getenv("POSTGRES_USER"),
@@ -47,7 +47,7 @@ def main():
 
     uvicorn.run(
         app,
-        host="127.0.0.1",  
+        host="0.0.0.0",  
         port=int(os.getenv("ETL_PORT")),
         reload=False
     )
