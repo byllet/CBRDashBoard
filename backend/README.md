@@ -10,3 +10,5 @@ curl -X GET localhost:15654/api/metrics?metric=rub&from=2025-01-01&to=2000-12-31
 curl -X GET "localhost:15001/api/metrics?metric=rub&from=2000-01-01&"
 curl -X GET "localhost:15654/api/metrics?metric=rub&from=2000-01-01&region=Moscow"
 curl -X GET "localhost:15654/api/metrics?metric=rub&from=2000-01-01&region=Saint Petersburg"
+
+curl -X GET "localhost:15001/api/metrics?metric=credits_stats"

@@ -13,15 +13,47 @@ class DataService extends IDataService {
   async getMetrics(req) {
     try {
       const {metric, operation, region, from, to} = req;
-      const availability = await this.checkDataAvailability(req);
+      let availability = await this.checkDataAvailability(req);
 
       if (!availability) {
-        this.logger.info(`No data found for metric: ${metric}, triggering
-        ETL`);
+        this.logger.info(`No data found for metric: ${metric}, triggering ETL`);
 
         const etlParams = {metric, region, from, to};
+        const etlResult = await this.etl_client.getMetrics(etlParams);
 
-        // await this.etl_client.getMetrics(etlParams);
+        if (etlResult.success) {
+          this.logger.info(`ETL completed with status: ${
+              etlResult.status}, waiting for data to be available`);
+
+          const maxRetries = 3;
+          const retryDelay = 500;  // 1/2 секунды
+
+          for (let i = 0; i < maxRetries; i++) {
+            await this.sleep(retryDelay);
+            availability = await this.checkDataAvailability(req);
+
+            if (availability) {
+              this.logger.info(`Data became available after ${i + 1} retries`);
+              break;
+            }
+
+            this.logger.info(
+                `Waiting for data, attempt ${i + 1}/${maxRetries}`);
+          }
+
+          if (!availability) {
+            this.logger.warn(
+                `Data still not available after ${maxRetries} retries`);
+            return {
+              success: false,
+              metrics: null,
+              message: 'Data loading timeout'
+            };
+          }
+        } else {
+          this.logger.error(`ETL failed with status: ${etlResult.status}`);
+          return {success: false, metrics: null, message: etlResult.message};
+        }
       }
 
       const rawData = await this.repository.findData(metric, from, to, region);
@@ -42,6 +74,11 @@ class DataService extends IDataService {
       this.logger.error('Error in getMetrics:', error);
       throw new Error(`Failed to get metrics: ${error.message}`);
     }
+  }
+
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   async checkDataAvailability(req) {
