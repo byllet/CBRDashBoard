@@ -46,7 +46,7 @@ class ApiClient:
         response_publication = requests.get(f"{self.__url}/data", params=params)
         headers = response_publication.json()['headerData']
         for header in headers:
-            header['elname'] = requested_data.name + " " + header["elname"].lower()
+            header['id'] = 10 * params['datasetId'] + header['id'] 
         return response_publication.json()["RawData"], headers
 
 
