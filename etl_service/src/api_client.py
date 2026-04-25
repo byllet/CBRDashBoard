@@ -3,23 +3,23 @@ import json
 from types import SimpleNamespace
 from typing import Dict, List
 from config import cbr_api_url
-from data_models import RequestedData
+from  data_models import RequestedData
 from datetime import datetime
 
 
 class ApiClient:
     __url : str
-    configs = {"Курс валют" : (33, 127, -1),
-                "Ставки по кредитам" : (14, 25, 2), 
-                "Статистика кредитования" : (20, 41, 22),
-                "Денежные агрегаты" : (5, 7, -1), 
-                "Ставки по депозитам" : (18, 37, 2)}
+    configs = {"currency_rates" : (33, 127, -1),
+                "credits_stats" : (14, 25, 2), 
+                "loan_rates" : (20, 41, 22),
+                "money_aggregates" : (5, 7, -1), 
+                "deposit_rates" : (18, 37, 2)}
     
     def __init__(self, url: str = cbr_api_url ) -> List[Dict]:
         self.__url = url
     
     
-    def fetch(self, requested_data : RequestedData) -> json:
+    async def fetch(self, requested_data : RequestedData) -> json:
         
         config = self.configs[requested_data.name]
         params = {"publicationId" : config[0],
@@ -47,6 +47,7 @@ class ApiClient:
         headers = response_publication.json()['headerData']
         for header in headers:
             header['elname'] = requested_data.name + " " + header["elname"].lower()
+            header['id'] = 10 * params['datasetId'] + header['id'] 
         return response_publication.json()["RawData"], headers
 
 
@@ -58,10 +59,31 @@ def main():
     example = ApiClient()
 
     currency_request = RequestedData
-    currency_request.name = 'Ставки по кредитам'
+    currency_request.name = 'currency_rates'
     currency_request.time_from = datetime(1984, 1 , 1)
     currency_request.time_to = datetime(2100, 1, 1)
     currency_history = example.fetch(currency_request)
+    print(currency_history[0][1])
+
+    currency_request.name = 'money_aggregates'
+    currency_history = example.fetch(currency_request)
+    for x in currency_history[1]:
+        print(x)
+
+    currency_request.name = 'credits_stats'
+    currency_history = example.fetch(currency_request)
+    for x in currency_history[1]:
+        print(x)
+    
+    currency_request.name = 'loan_rates'
+    currency_history = example.fetch(currency_request)
+    for x in currency_history[1]:
+        print(x)
+
+    currency_request.name = 'deposit_rates'
+    currency_history = example.fetch(currency_request)
+    for x in currency_history[1]:
+        print(x)
     '''incorrect fetch
     xx = example.fetch({ #incorrect
                 "publicationId" : 228,

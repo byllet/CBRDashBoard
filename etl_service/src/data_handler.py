@@ -5,16 +5,20 @@ from datetime import datetime
 
 class DataHandler:
 
-    def extract_data(self, data : List[Dict]) -> List[List]:
+    def handle(self, data : List[Dict]) -> List[List]:
         raw_data, headers = data
         clean_data = []
         for i, header in enumerate(headers):
-            h_data = {'id' : header['id'], 'name' : header['elname'], 'data' : []}
+            h_data = {'id' : header['id'], 'data' : []}
+            if header['id'] // 100 == 3 and header['id'] not in (371, 378, 379, 380):
+                continue
+            if header['id'] // 100 == 2 and header['id'] not in (257, 259, 261):
+                continue
             for j in range(i, len(raw_data), len(headers)):
                 row = raw_data[j]
                 h_data['data'].append((
                     header['id'],
-                    row["element_id"],
+                    22,
                     self.decrease_month(row["date"][0:10]),
                     row["obs_val"]
                     ))
