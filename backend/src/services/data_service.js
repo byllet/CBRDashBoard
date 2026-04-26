@@ -1,5 +1,9 @@
 import IDataService from './service.interface.js';
 
+function getUntilSecondUnderscore(str) {
+  const parts = str.split('_');
+  return parts.slice(0, 2).join('_');
+}
 
 class DataService extends IDataService {
   constructor(repository, calculator, etl_client, logger) {
@@ -12,8 +16,11 @@ class DataService extends IDataService {
 
   async getMetrics(req) {
     try {
-      const {metric, operation, region, from, to} = req;
-      let availability = await this.checkDataAvailability(req);
+      const {full_metric, operation, region, from, to} = req;
+
+      let metric = getUntilSecondUnderscore(full_metric)
+      let availability = await this.checkDataAvailability(
+          {metric: full_metric, from, to, region});
 
       if (!availability) {
         this.logger.info(`No data found for metric: ${metric}, triggering ETL`);
@@ -30,7 +37,8 @@ class DataService extends IDataService {
 
           for (let i = 0; i < maxRetries; i++) {
             await this.sleep(retryDelay);
-            availability = await this.checkDataAvailability(req);
+            availability = await this.checkDataAvailability(
+                {metric: full_metric, from, to, region});
 
             if (availability) {
               this.logger.info(`Data became available after ${i + 1} retries`);
@@ -56,9 +64,10 @@ class DataService extends IDataService {
         }
       }
 
-      const rawData = await this.repository.findData(metric, from, to, region);
+      const rawData =
+          await this.repository.findData(full_metric, from, to, region);
 
-      console.log('Raw data retrieved:', rawData);
+      // console.log('Raw data retrieved:', rawData);
 
       if (!rawData || rawData.length === 0) {
         this.logger.warn(`No data found for filters: ${JSON.stringify(req)}`);
