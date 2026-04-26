@@ -13,7 +13,7 @@ import ETLClient from './clients/etl_client.js';
 import DataController from './controllers/data_controller.js';
 
 const app = express();
-const PORT = process.env.PORT || 15654;
+const PORT = process.env.PORT || 15001;
 
 app.use(helmet());
 app.use(cors());

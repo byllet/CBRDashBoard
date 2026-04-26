@@ -1,12 +1,16 @@
 openapi: 3.0.0
 info:
-  title: CBR Analytics
+  title: CBR Analytics API
   version: 1.0.0
+  description: API для получения экономических метрик (курсы валют, ставки, агрегаты и др.)
 
 paths:
   /api/metrics:
     get:
-      summary: Получить метрики
+      summary: Получить экономические метрики
+      description: |
+        Возвращает рассчитанные метрики по указанному параметру.
+        Поддерживаются различные операции (среднее, сумма, минимум, максимум и др.)
       parameters:
         - name: metric
           in: query
@@ -19,54 +23,118 @@ paths:
               - money_aggregates
               - deposit_rates
               - loan_rates
-          description: Название метрики
+          description: Название экономического параметра (соответствует `parameter_name` в БД)
         - name: operation
           in: query
-          required: true
           schema:
             type: string
-          description: Название метрики
+            enum:
+              - avg
+              - sum
+              - min
+              - max
+              - count
+          description: Агрегатная операция над значениями метрики
+        - name: region
+          in: query
+          schema:
+            type: string
+          description: Название региона (соответствует `region_name` в БД). Если не указан — данные по всем регионам.
         - name: from
           in: query
           schema:
             type: string
             format: date
-          description: Дата начала (YYYY-MM-DD)
+          description: Начальная дата в формате YYYY-MM-DD
+          example: "2024-01-01"
         - name: to
           in: query
           schema:
             type: string
             format: date
-          description: Дата окончания (YYYY-MM-DD)
-        - name: place
-          in: query
-          schema:
-            type: string
-          description: Место/регион
+          description: Конечная дата в формате YYYY-MM-DD
+          example: "2024-12-31"
       responses:
         '200':
-          description: Успешно
+          description: Успешный ответ с метриками
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    oneOf:
+                      - type: object
+                        additionalProperties: true
+                        description: Рассчитанное значение метрики (для одной операции)
+                      - type: array
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                              format: date
+                            value:
+                              type: number
+                            region:
+                              type: string
+                        description: Детализированные данные с разбивкой по датам
         '400':
-          description: 'Parameter "metric" is required'
+          description: Ошибка валидации запроса
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "metric is required"
         '404':
-          description: 'Data not found for the specified parameters'
+          description: Данные не найдены для указанных параметров
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  metrics:
+                    type: 'null'
         '500':
-          description: 'Internal server error'
+          description: Внутренняя ошибка сервера
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Failed to retrieve metrics"
+
+  /health:
+    get:
+      summary: Проверка состояния сервиса
+      responses:
+        '200':
+          description: Сервис работает
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  timestamp:
+                    type: string
+                    format: date-time

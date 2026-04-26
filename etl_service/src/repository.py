@@ -1,5 +1,18 @@
 import asyncpg
+from typing import List
+from data_models import RequestedData
 
 class Repository:
-    def __init__(self, pool : asyncpg.Pool):
-        self.__pool = pool
+    pool : asyncpg.Pool
+    def __init__(self, connection_pool: asyncpg.Pool):
+        self.pool = connection_pool
+    
+    async def load_data(self, data : List[List]):
+        async with self.pool.acquire() as conn:
+            for header in data:
+                await conn.executemany("""INSERT INTO economic_data ( parameter_id, region_id, record_date, parameter_value) 
+                    VALUES ($1, $2, $3, $4)
+                    """, header['data'])
+    
+    async def is_already_exist(self, request_data: RequestedData) -> bool:
+        return False

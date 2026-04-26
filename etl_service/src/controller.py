@@ -15,9 +15,9 @@ class HealthResponse(BaseModel):
 
 class LoadDataRequest(BaseModel):
     name: str
-    time_from: Optional[str]
-    time_to: Optional[str]
-    location: Optional[str]
+    time_from: Optional[datetime] = None
+    time_to: Optional[datetime] = None
+    location: Optional[str] = None
 
 class LoadDataResponse(BaseModel):
     status: str
@@ -34,8 +34,22 @@ def create_app(orchestrator: Orchestrator) -> FastAPI:
     
     @app.post("/api/v1/", response_model=LoadDataResponse)
     async def get(request: LoadDataRequest):
-        orchestrator.process_data_pipeline(RequestedData(request.name, request.time_from, request.time_to, request.location))
-        return {"status" : "resp"}
+        orchestrator = app.state.orchestrator
+        if request.time_from is None:
+            request.time_from = datetime(2000, 1, 1)
+        if request.time_to is None:
+            request.time_to = datetime.now()
         
-                    
+        request_data = RequestedData(
+            name=request.name,
+            time_from=request.time_from,
+            time_to=request.time_to,
+            location=request.location
+        )
+        print(request_data)
+    
+        status = await orchestrator.process_data_pipeline(request_data)
+        print(f"status = {status}")
+        return {"status" : status.name}
+        
     return app
