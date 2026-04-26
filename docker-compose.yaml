@@ -56,4 +56,4 @@ services:
 networks:
   cbr-network:
     name: ${NETWORK_NAME}
-    external: true
+    external: false

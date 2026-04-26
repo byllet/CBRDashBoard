@@ -13,7 +13,7 @@ COPY src/ ./src/
 
 ENV PYTHONPATH=/app/src
 ENV ETL_PORT=15333
-ENV NETWORK_NAME=cbr-db-container
+ENV DB_HOST=cbr-db-container
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=password
 ENV POSTGRES_DB=cbr_db

@@ -35,10 +35,13 @@ class Orchestrator:
                 print(error.GetMsg())
                 return error 
 
+            print("Fetching data from API...")
             cli_res = await self.__client.fetch(request_data)
-            # print(cli_res)
+            print("After fetch")
             handled_data = self.__handler.extract_data(cli_res)
+            print("Data extracted successfully")
             await self.__repository.load_data(handled_data)
+            print("Data loaded successfully")
         except Exception as e:
             error = Status.ERROR
             error.SetError(str(e))

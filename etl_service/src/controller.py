@@ -49,7 +49,7 @@ def create_app(orchestrator: Orchestrator) -> FastAPI:
         print(request_data)
     
         status = await orchestrator.process_data_pipeline(request_data)
-        print(f"status.GetMsg() = {status.GetMsg()}")
+        print(f"status = {status}")
         return {"status" : status.name}
         
     return app
