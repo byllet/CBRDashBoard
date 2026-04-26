@@ -15,6 +15,8 @@ CREATE TABLE economic_data (
     record_date DATE NOT NULL,
     parameter_value FLOAT,
 
+    UNIQUE (parameter_id, record_date),
+
     CONSTRAINT fk_parameter
         FOREIGN KEY (parameter_id)
         REFERENCES economic_parameters(parameter_id)

@@ -20,7 +20,7 @@ class ApiClient:
     
     
     async def fetch(self, requested_data : RequestedData) -> json:
-
+        
         config = self.configs[requested_data.name]
         params = {"publicationId" : config[0],
                 "datasetId" : config[1],
@@ -47,7 +47,8 @@ class ApiClient:
         headers = response_publication.json()['headerData']
         for header in headers:
             header['id'] = 10 * params['datasetId'] + header['id'] 
-        return response_publication.json()["RawData"], headers
+
+        return response_publication.json()["RawData"], headers, params['datasetId'] * 10
 
 
 def SaveJsonToFile(data, filename):

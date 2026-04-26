@@ -6,7 +6,7 @@ from datetime import datetime
 class DataHandler:
 
     def extract_data(self, data : List[Dict]) -> List[List]:
-        raw_data, headers = data
+        raw_data, headers, coeff =  data
         clean_data = []
         for i, header in enumerate(headers):
             h_data = {'id' : header['id'], 'data' : []}
@@ -14,14 +14,15 @@ class DataHandler:
                 continue
             if header['id'] // 100 == 2 and header['id'] not in (257, 259, 260):
                 continue
-            for j in range(i, len(raw_data), len(headers)):
+            for j in range(len(raw_data)):
                 row = raw_data[j]
-                h_data['data'].append((
-                    header['id'],
-                    22,
-                    self.decrease_month(row["date"][0:10]),
-                    row["obs_val"]
-                    ))
+                if coeff + row['colId'] == header['id']:
+                    h_data['data'].append((
+                        header['id'],
+                        22,
+                        self.decrease_month(row["date"][0:10]),
+                        row["obs_val"]
+                        ))
             clean_data.append(h_data)
         return clean_data
     
