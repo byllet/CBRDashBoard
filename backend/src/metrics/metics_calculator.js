@@ -10,7 +10,6 @@ class MetricsCalculator extends IMetricsCalculator {
       return null;
     }
 
-    console.log(`Calculating metric: ${metric} with operation: ${operation}`);
     switch (operation) {
       case 'avg':
         return this.calculateAvg(validData);
