@@ -222,14 +222,21 @@ function Page4() {
                 return (
                     <ResponsiveContainer width="100%" height={450}>
                         <LineChart data={chartData} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
-                            <XAxis dataKey="date" fontSize={12} angle={aggregation === 'year' ? 0 : -45} textAnchor="end" height={aggregation === 'year' ? 40 : 80} />
+                            <XAxis
+                                dataKey="date"
+                                tick={{ fontSize: 12 }}
+                                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
+                                angle={-45}
+                                textAnchor="end"
+                                height={80}
+                            />
                             <YAxis label={{ value: 'ставка, %', angle: -90, position: 'insideLeft', dx: -15 }} />
                             <Tooltip formatter={(value) => `${Number(value).toFixed(2)}%`} />
                             <Legend />
-                            <Line type="monotone" dataKey="on_demand" stroke="#8884d8" name="До востребования" strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="short_term" stroke="#82ca9d" name="Краткосрочные" strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="mid_term" stroke="#ffc658" name="1-3 года" strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="long_term" stroke="#ff8042" name="Более 3 лет" strokeWidth={2} isAnimationActive={false} />
+                            <Line type="monotone" dataKey="on_demand" stroke="#8884d8" name="До востребования" strokeWidth={2} isAnimationActive={false} dot={false}/>
+                            <Line type="monotone" dataKey="short_term" stroke="#82ca9d" name="Краткосрочные" strokeWidth={2} isAnimationActive={false} dot={false}/>
+                            <Line type="monotone" dataKey="mid_term" stroke="#ffc658" name="1-3 года" strokeWidth={2} isAnimationActive={false} dot={false}/>
+                            <Line type="monotone" dataKey="long_term" stroke="#ff8042" name="Более 3 лет" strokeWidth={2} isAnimationActive={false} dot={false}/>
                         </LineChart>
                     </ResponsiveContainer>
                 );
@@ -239,7 +246,14 @@ function Page4() {
                     return (
                         <ResponsiveContainer width="100%" height={450}>
                             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
-                                <XAxis dataKey="date" fontSize={12} angle={aggregation === 'year' ? 0 : -45} textAnchor="end" height={aggregation === 'year' ? 40 : 80} />
+                                <XAxis
+                                    dataKey="date"
+                                    tick={{ fontSize: 12 }}
+                                    interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
+                                    angle={-45}
+                                    textAnchor="end"
+                                    height={80}
+                                />
                                 <YAxis label={{ value: 'ставка, %', angle: -90, position: 'insideLeft', dx: -15 }} domain={[0, 100]} />
                                 <Tooltip formatter={(value) => `${Number(value).toFixed(2)}%`} />
                                 <Legend />
@@ -255,7 +269,14 @@ function Page4() {
                     return (
                         <ResponsiveContainer width="100%" height={450}>
                             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
-                                <XAxis dataKey="date" fontSize={12} angle={aggregation === 'year' ? 0 : -45} textAnchor="end" height={aggregation === 'year' ? 40 : 80} />
+                                <XAxis
+                                    dataKey="date"
+                                    tick={{ fontSize: 12 }}
+                                    interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
+                                    angle={-45}
+                                    textAnchor="end"
+                                    height={80}
+                                />
                                 <YAxis label={{ value: 'ставка, %', angle: -90, position: 'insideLeft', dx: -15 }} />
                                 <Tooltip formatter={(value) => `${Number(value).toFixed(2)}%`} />
                                 <Legend />

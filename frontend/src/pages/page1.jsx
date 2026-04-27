@@ -157,16 +157,15 @@ function Page1() {
             <LineChart data={data}>
               <XAxis
                 dataKey="date"
-                interval={0}
-                fontSize={12}
+                tick={{ fontSize: 12 }}
+                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
                 angle={-45}
                 textAnchor="end"
                 height={80}
-                tick={{ fontSize: 11 }}
               />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="value" stroke="#8884d8" isAnimationActive={false} />
+              <Line type="monotone" dataKey="value" stroke="#8884d8" isAnimationActive={false} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         );
@@ -177,12 +176,11 @@ function Page1() {
           <BarChart data={data}>
             <XAxis
               dataKey="date"
-              interval={0}
-              fontSize={12}
+              tick={{ fontSize: 12 }}
+              interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
               angle={-45}
               textAnchor="end"
               height={80}
-              tick={{ fontSize: 11 }}
             />
             <YAxis />
             <Tooltip content={<CustomTooltip />} />

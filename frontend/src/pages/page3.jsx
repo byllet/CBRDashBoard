@@ -213,12 +213,11 @@ function Page3() {
                         <LineChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
                             <XAxis
                                 dataKey="date"
-                                interval={0}
-                                fontSize={14}
+                                tick={{ fontSize: 12 }}
+                                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
                                 angle={-45}
                                 textAnchor="end"
                                 height={80}
-                                tick={{ fontSize: 11 }}
                             />
                             <YAxis
                                 label={{ value: 'млрд руб', angle: -90, position: 'insideLeft', dx: -15, style: { textAnchor: 'middle' } }}
@@ -226,11 +225,11 @@ function Page3() {
                             />
                             <Tooltip formatter={(value) => `${Number(value).toFixed(0)} млрд руб`} />
                             <Legend />
-                            <Line type="monotone" dataKey="total" stroke="#8884d8" name="Всего" strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="m1" stroke="#82ca9d" name="M1" strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="financial" stroke="#ffc658" name="Финансовые орг." strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="nonfinancial" stroke="#ff8042" name="Нефинансовые орг." strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="households" stroke="#e9ee44" name="Домохозяйства" strokeWidth={2} isAnimationActive={false} />
+                            <Line type="monotone" dataKey="total" stroke="#8884d8" name="Всего" strokeWidth={2} isAnimationActive={false} dot = {false}/>
+                            <Line type="monotone" dataKey="m1" stroke="#82ca9d" name="M1" strokeWidth={2} isAnimationActive={false} dot = {false}/>
+                            <Line type="monotone" dataKey="financial" stroke="#ffc658" name="Финансовые орг." strokeWidth={2} isAnimationActive={false} dot = {false}/>
+                            <Line type="monotone" dataKey="nonfinancial" stroke="#ff8042" name="Нефинансовые орг." strokeWidth={2} isAnimationActive={false} dot = {false}/>
+                            <Line type="monotone" dataKey="households" stroke="#e9ee44" name="Домохозяйства" strokeWidth={2} isAnimationActive={false} dot = {false}/>
                         </LineChart>
                     </ResponsiveContainer>
                 );
@@ -241,12 +240,11 @@ function Page3() {
                         <BarChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
                             <XAxis
                                 dataKey="date"
-                                interval={0}
-                                fontSize={14}
+                                tick={{ fontSize: 12 }}
+                                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
                                 angle={-45}
                                 textAnchor="end"
                                 height={80}
-                                tick={{ fontSize: 11 }}
                             />
                             <YAxis
                                 label={{ value: 'млрд руб', angle: -90, position: 'insideLeft', dx: -15, style: { textAnchor: 'middle' } }}
@@ -269,12 +267,11 @@ function Page3() {
                         <BarChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
                             <XAxis
                                 dataKey="date"
-                                interval={0}
-                                fontSize={14}
+                                tick={{ fontSize: 12 }}
+                                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
                                 angle={-45}
                                 textAnchor="end"
                                 height={80}
-                                tick={{ fontSize: 11 }}
                             />
                             <YAxis
                                 label={{ value: 'млрд руб', angle: -90, position: 'insideLeft', dx: -15, style: { textAnchor: 'middle' } }}

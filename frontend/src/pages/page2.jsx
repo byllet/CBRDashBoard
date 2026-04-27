@@ -41,46 +41,46 @@ function Page2() {
     const [toDate, setToDate] = useState(new Date());
 
     const columns = [
-        { 
-            field: 'date', 
-            headerName: aggregation === 'month' ? 'Дата (месяц)' : 'Год', 
-            flex: 1, 
-            headerAlign: 'left', 
-            align: 'left' 
+        {
+            field: 'date',
+            headerName: aggregation === 'month' ? 'Дата (месяц)' : 'Год',
+            flex: 1,
+            headerAlign: 'left',
+            align: 'left'
         },
-        { 
-            field: 'short_term', 
-            headerName: 'Краткосрочные (%)', 
-            flex: 1, 
-            type: 'number', 
-            headerAlign: 'left', 
-            align: 'left', 
+        {
+            field: 'short_term',
+            headerName: 'Краткосрочные (%)',
+            flex: 1,
+            type: 'number',
+            headerAlign: 'left',
+            align: 'left',
             valueFormatter: (params) => {
                 const val = params;
                 if (val === undefined || val === null || isNaN(val)) return '—';
                 return Number(val).toFixed(2);
             }
         },
-        { 
-            field: 'mid_term', 
-            headerName: '1-3 года (%)', 
-            flex: 1, 
-            type: 'number', 
-            headerAlign: 'left', 
-            align: 'left', 
+        {
+            field: 'mid_term',
+            headerName: '1-3 года (%)',
+            flex: 1,
+            type: 'number',
+            headerAlign: 'left',
+            align: 'left',
             valueFormatter: (params) => {
                 const val = params;
                 if (val === undefined || val === null || isNaN(val)) return '—';
                 return Number(val).toFixed(2);
             }
         },
-        { 
-            field: 'long_term', 
-            headerName: 'Более 3 лет (%)', 
-            flex: 1, 
-            type: 'number', 
-            headerAlign: 'left', 
-            align: 'left', 
+        {
+            field: 'long_term',
+            headerName: 'Более 3 лет (%)',
+            flex: 1,
+            type: 'number',
+            headerAlign: 'left',
+            align: 'left',
             valueFormatter: (params) => {
                 const val = params;
                 if (val === undefined || val === null || isNaN(val)) return '—';
@@ -103,7 +103,7 @@ function Page2() {
                     mid_term: 'credits_stats_1_to_3_years',
                     long_term: 'credits_stats_over_3_years'
                 };
-                
+
                 const results = {};
 
                 for (const [key, metricName] of Object.entries(metricsList)) {
@@ -117,7 +117,7 @@ function Page2() {
                 }
 
                 const dateMap = new Map();
-                
+
                 for (const key of Object.keys(metricsList)) {
                     for (const item of results[key]) {
                         let date = item.record_date.split('T')[0];
@@ -126,7 +126,7 @@ function Page2() {
                         } else {
                             date = date.slice(0, 4);
                         }
-                        
+
                         if (!dateMap.has(date)) {
                             dateMap.set(date, { date, short_term: 0, mid_term: 0, long_term: 0, count: 0 });
                         }
@@ -143,7 +143,7 @@ function Page2() {
                     mid_term: d.mid_term / (d.count / Object.keys(metricsList).length),
                     long_term: d.long_term / (d.count / Object.keys(metricsList).length),
                 }));
-                
+
                 finalData.sort((a, b) => a.date.localeCompare(b.date));
 
                 console.log('Данные по кредитам:', finalData);
@@ -174,24 +174,23 @@ function Page2() {
                 return (
                     <ResponsiveContainer width="100%" height={350}>
                         <LineChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
-                            <XAxis 
-                                dataKey="date" 
-                                interval={0}
-                                fontSize={12}
+                            <XAxis
+                                dataKey="date"
+                                tick={{ fontSize: 12 }}
+                                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
                                 angle={-45}
                                 textAnchor="end"
                                 height={80}
-                                tick={{ fontSize: 11 }}
                             />
-                            <YAxis 
+                            <YAxis
                                 label={{ value: 'ставка, %', angle: -90, position: 'insideLeft', dx: -15, style: { textAnchor: 'middle' } }}
                                 tick={{ fontSize: 11 }}
                             />
                             <Tooltip formatter={(value) => `${Number(value).toFixed(2)}%`} />
                             <Legend />
-                            <Line type="monotone" dataKey="short_term" stroke="#8884d8" name="Краткосрочные" strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="mid_term" stroke="#82ca9d" name="1-3 года" strokeWidth={2} isAnimationActive={false} />
-                            <Line type="monotone" dataKey="long_term" stroke="#ffc658" name="Более 3 лет" strokeWidth={2} isAnimationActive={false} />
+                            <Line type="monotone" dataKey="short_term" stroke="#8884d8" name="Краткосрочные" strokeWidth={2} isAnimationActive={false} dot={false} />
+                            <Line type="monotone" dataKey="mid_term" stroke="#82ca9d" name="1-3 года" strokeWidth={2} isAnimationActive={false} dot={false} />
+                            <Line type="monotone" dataKey="long_term" stroke="#ffc658" name="Более 3 лет" strokeWidth={2} isAnimationActive={false} dot={false} />
                         </LineChart>
                     </ResponsiveContainer>
                 );
@@ -200,16 +199,15 @@ function Page2() {
                 return (
                     <ResponsiveContainer width="100%" height={350}>
                         <BarChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
-                            <XAxis 
-                                dataKey="date" 
-                                interval={0}
-                                fontSize={12}
+                            <XAxis
+                                dataKey="date"
+                                tick={{ fontSize: 12 }}
+                                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
                                 angle={-45}
                                 textAnchor="end"
                                 height={80}
-                                tick={{ fontSize: 11 }}
                             />
-                            <YAxis 
+                            <YAxis
                                 label={{ value: 'ставка, %', angle: -90, position: 'insideLeft', dx: -15, style: { textAnchor: 'middle' } }}
                                 tick={{ fontSize: 11 }}
                             />
@@ -253,7 +251,6 @@ function Page2() {
             <div style={{ padding: '20px' }}>
                 <h1>Статистика кредитования</h1>
 
-                {/* Блок выбора периода */}
                 <div style={{
                     marginBottom: '20px',
                     padding: '15px',
@@ -266,24 +263,24 @@ function Page2() {
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                         <label style={{ margin: 0, lineHeight: 'normal' }}>С:</label>
-                        <DatePicker 
-                            value={fromDate} 
-                            onChange={setFromDate} 
-                            renderInput={(params) => <TextField {...params} size="small" sx={{ width: '160px' }} />} 
-                            format="MM.yyyy" 
-                            views={['year', 'month']} 
-                            openTo="year" 
+                        <DatePicker
+                            value={fromDate}
+                            onChange={setFromDate}
+                            renderInput={(params) => <TextField {...params} size="small" sx={{ width: '160px' }} />}
+                            format="MM.yyyy"
+                            views={['year', 'month']}
+                            openTo="year"
                         />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                         <label style={{ margin: 0, lineHeight: 'normal' }}>По:</label>
-                        <DatePicker 
-                            value={toDate} 
-                            onChange={setToDate} 
-                            renderInput={(params) => <TextField {...params} size="small" sx={{ width: '160px' }} />} 
-                            format="MM.yyyy" 
-                            views={['year', 'month']} 
-                            openTo="year" 
+                        <DatePicker
+                            value={toDate}
+                            onChange={setToDate}
+                            renderInput={(params) => <TextField {...params} size="small" sx={{ width: '160px' }} />}
+                            format="MM.yyyy"
+                            views={['year', 'month']}
+                            openTo="year"
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -295,7 +292,6 @@ function Page2() {
                     </div>
                 </div>
 
-                {/* Кнопки выбора */}
                 <div style={{ marginBottom: '20px' }}>
                     <button
                         onClick={() => setAggregation('month')}
@@ -355,15 +351,13 @@ function Page2() {
                     </button>
                 </div>
 
-                {/* График */}
                 {renderChart()}
 
-                {/* Таблица */}
                 <div style={{ height: 400, width: '100%', marginTop: '20px' }}>
-                    <DataGrid 
-                        rows={data.map((d, i) => ({ ...d, id: i }))} 
-                        columns={columns} 
-                        initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} 
+                    <DataGrid
+                        rows={data.map((d, i) => ({ ...d, id: i }))}
+                        columns={columns}
+                        initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
                         pageSizeOptions={[5, 10, 25]}
                         checkboxSelection={false}
                         disableRowSelectionOnClick
@@ -371,7 +365,7 @@ function Page2() {
                 </div>
 
                 <div style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
-                    Ставки по кредитам с {String(fromDate.getMonth() + 1).padStart(2, '0')}.{fromDate.getFullYear()} по {String(toDate.getMonth() + 1).padStart(2, '0')}.{toDate.getFullYear()} (Россия) | 
+                    Ставки по кредитам с {String(fromDate.getMonth() + 1).padStart(2, '0')}.{fromDate.getFullYear()} по {String(toDate.getMonth() + 1).padStart(2, '0')}.{toDate.getFullYear()} (Россия) |
                     {aggregation === 'month' ? ` Месяцев: ${data.length}` : ` Лет: ${data.length}`}
                 </div>
             </div>

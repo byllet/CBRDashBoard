@@ -48,9 +48,9 @@ function Page5() {
   };
 
   const columns = [
-    { 
-      field: 'date', 
-      headerName: aggregation === 'month' ? 'Дата (месяц)' : 'Год', 
+    {
+      field: 'date',
+      headerName: aggregation === 'month' ? 'Дата (месяц)' : 'Год',
       flex: 1,
       headerAlign: 'left',
       align: 'left',
@@ -59,9 +59,9 @@ function Page5() {
         return params.value;
       }
     },
-    { 
-      field: 'value', 
-      headerName: 'Объем, млн ₽', 
+    {
+      field: 'value',
+      headerName: 'Объем, млн ₽',
       flex: 1,
       type: 'number',
       headerAlign: 'left',
@@ -113,12 +113,12 @@ function Page5() {
             uniqueData[dateKey] = item;
           }
         }
-        
+
         let aggregatedData = Object.values(uniqueData);
         aggregatedData.sort((a, b) => a.date.localeCompare(b.date));
-        
+
         let finalData;
-        
+
         if (aggregation === 'year') {
           // Группировка по годам (среднее значение за год)
           const yearlyData = {};
@@ -130,13 +130,13 @@ function Page5() {
             yearlyData[year].value += item.value;
             yearlyData[year].count++;
           }
-          
+
           finalData = Object.values(yearlyData).map(y => ({
             id: y.date,
             date: y.date,
             value: y.value / y.count
           }));
-          
+
           finalData.sort((a, b) => a.date.localeCompare(b.date));
         } else {
           // Помесячная агрегация
@@ -149,13 +149,13 @@ function Page5() {
             monthlyData[month].value += item.value;
             monthlyData[month].count++;
           }
-          
+
           finalData = Object.values(monthlyData).map(m => ({
             id: m.date,
             date: m.date,
             value: m.value / m.count
           }));
-          
+
           finalData.sort((a, b) => a.date.localeCompare(b.date));
         }
 
@@ -187,20 +187,19 @@ function Page5() {
         return (
           <ResponsiveContainer width="100%" height={350}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
-              <XAxis 
-                dataKey="date" 
-                interval={0}
-                fontSize={12}
-                angle={aggregation === 'year' ? 0 : -45}
-                textAnchor={aggregation === 'year' ? 'middle' : 'end'}
-                height={aggregation === 'year' ? 40 : 80}
-                tick={{ fontSize: 11 }}
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 12 }}
+                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
+                angle={-45}
+                textAnchor="end"
+                height={80}
               />
-              <YAxis 
+              <YAxis
                 label={{ value: 'млн руб', angle: -90, position: 'insideLeft', dx: -15, style: { textAnchor: 'middle' } }}
                 tick={{ fontSize: 11 }}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => `${Number(value).toFixed(0)} млн руб`}
                 labelFormatter={(label) => aggregation === 'year' ? `${label} год` : `Период: ${label}`}
               />
@@ -212,24 +211,23 @@ function Page5() {
         return (
           <ResponsiveContainer width="100%" height={350}>
             <LineChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
-              <XAxis 
-                dataKey="date" 
-                interval={0}
-                fontSize={12}
-                angle={aggregation === 'year' ? 0 : -45}
-                textAnchor={aggregation === 'year' ? 'middle' : 'end'}
-                height={aggregation === 'year' ? 40 : 80}
-                tick={{ fontSize: 11 }}
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 12 }}
+                interval={Math.floor(data.length / 10)}  // Показывать ~10 меток
+                angle={-45}
+                textAnchor="end"
+                height={80}
               />
-              <YAxis 
+              <YAxis
                 label={{ value: 'млн руб', angle: -90, position: 'insideLeft', dx: -15, style: { textAnchor: 'middle' } }}
                 tick={{ fontSize: 11 }}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => `${Number(value).toFixed(0)} млн руб`}
                 labelFormatter={(label) => aggregation === 'year' ? `${label} год` : `Период: ${label}`}
               />
-              <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} dot={{ r: 4 }} isAnimationActive={false} />
+              <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} dot={{ r: 4 }} isAnimationActive={false} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         );
@@ -304,7 +302,7 @@ function Page5() {
             <button onClick={() => setQuickPeriod(6)} style={buttonStyle}>6 месяцев</button>
             <button onClick={() => setQuickPeriod(12)} style={buttonStyle}>1 год</button>
             <button onClick={() => setQuickPeriod(24)} style={buttonStyle}>2 года</button>
-            <button onClick={() => setQuickPeriod(60)} style={buttonStyle}>5 лет</button> 
+            <button onClick={() => setQuickPeriod(60)} style={buttonStyle}>5 лет</button>
             <button
               onClick={() => {
                 setFromDate(new Date('2000-01-01'));
@@ -440,7 +438,7 @@ function Page5() {
         </div>
 
         <div style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
-          {metricNames[metric]} с {String(fromDate.getMonth() + 1).padStart(2, '0')}.{fromDate.getFullYear()} по {String(toDate.getMonth() + 1).padStart(2, '0')}.{toDate.getFullYear()} (Россия) | 
+          {metricNames[metric]} с {String(fromDate.getMonth() + 1).padStart(2, '0')}.{fromDate.getFullYear()} по {String(toDate.getMonth() + 1).padStart(2, '0')}.{toDate.getFullYear()} (Россия) |
           {aggregation === 'month' ? ` Месяцев: ${data.length}` : ` Лет: ${data.length}`}
         </div>
       </div>
