@@ -1,0 +1,12 @@
+*.pyc
+error.log
+combined.log
+backend/node_modules/
+backend/package-lock.json
+etl_service/src/__pycache__
+etl_service/.venv
+.venv
+__pycache__
+frontend/node_modules/
+frontend/package-lock.json
+frontend/.vite
