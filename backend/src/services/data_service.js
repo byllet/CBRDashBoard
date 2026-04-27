@@ -25,7 +25,7 @@ class DataService extends IDataService {
       if (!availability) {
         this.logger.info(`No data found for metric: ${metric}, triggering ETL`);
 
-        const etlParams = {metric, region, from, to};
+        const etlParams = {metric, region};
         const etlResult = await this.etl_client.getMetrics(etlParams);
 
         if (etlResult.success) {

@@ -7,3 +7,6 @@ etl_service/src/__pycache__
 etl_service/.venv
 .venv
 __pycache__
+frontend/node_modules/
+frontend/package-lock.json
+frontend/.vite
