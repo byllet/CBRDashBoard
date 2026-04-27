@@ -13,7 +13,7 @@ function App() {
         <Link to="/page2" style={{ marginRight: '20px' }}>Статистика кредитования</Link>
         <Link to="/page3" style={{ marginRight: '20px' }}>Денежные агрегаты</Link>
         <Link to="/page4" style={{ marginRight: '20px' }}>Ставки по депозитам</Link>
-        <Link to="/page5" style={{ marginRight: '20px' }}>Ставки по кредитам</Link>
+        <Link to="/page5" style={{ marginRight: '20px' }}>Объёмы кредитования</Link>
       </nav>
 
       <Routes>

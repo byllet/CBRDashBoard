@@ -13,3 +13,4 @@ curl -X GET "localhost:15001/api/metrics?metric=currency_rates_yuan&operation=av
 curl -X GET "localhost:15001/api/metrics?metric=currency_rates_yuan&operation=avg&from=2006-10-01&to=2006-12-01"
 curl -X GET "localhost:15001/api/metrics?metric=deposit_rates_1_to_3_years"
 curl -X GET "localhost:15001/api/metrics?metric=deposit_rates_1_to_3_years&from=2022-10-01"
+curl -X GET "localhost:15001/api/metrics?metric=loan_rates_total"
