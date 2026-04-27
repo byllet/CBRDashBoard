@@ -53,6 +53,20 @@ services:
     - database
     - etl-service
 
+  frontend:
+    build:
+      context: ./frontend
+    container_name: ${FRONTEND_CONTAINER_NAME}
+    environment:
+      PORT: ${FRONTEND_PORT}
+      BACKEND_URL: http://${BACKEND_CONTAINER_NAME}:${BACKEND_PORT}
+    ports:
+    - "${FRONTEND_PORT}:80"
+    networks:
+      - ${NETWORK_NAME}
+    depends_on:
+      - backend
+
 networks:
   cbr-network:
     name: ${NETWORK_NAME}

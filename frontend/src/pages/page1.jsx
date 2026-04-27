@@ -7,7 +7,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 
-const API_BASE_URL = 'http://localhost:15001';
+const API_BASE_URL = process.env.BACKEND_URL || 'http://localhost:15001';
 
 const fetchMetrics = async ({ metric, region, from, to }) => {
   const params = new URLSearchParams();
@@ -15,6 +15,7 @@ const fetchMetrics = async ({ metric, region, from, to }) => {
   if (from) params.append('from', from);
   if (to) params.append('to', to);
 
+  console.log(API_BASE_URL, process.env.BACKEND_HOST, process.env.BACKEND_PORT);
   const response = await fetch(`${API_BASE_URL}/api/metrics?${params.toString()}`);
   const url = `${API_BASE_URL}/api/metrics?${params.toString()}`;
 

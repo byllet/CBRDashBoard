@@ -7,7 +7,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 
-const API_BASE_URL = 'http://localhost:15001';
+const API_BASE_URL = process.env.BACKEND_URL || 'http://localhost:15001';
 
 const fetchMetrics = async ({ metric, region, from, to }) => {
   const params = new URLSearchParams();
