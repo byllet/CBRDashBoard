@@ -1,108 +1,102 @@
+# ETL Service
+
+Сервис для извлечения, трансформации и загрузки финансовых данных из API ЦБ РФ в PostgreSQL.
+
+## 📋 Стек технологий
+
+- **Python 3.x** - Runtime
+- **FastAPI** - Web framework
+- **AsyncPG** - Асинхронный PostgreSQL драйвер
+- **Uvicorn** - ASGI сервер
+- **Requests** - HTTP клиент
+- **python-dotenv** - Управление переменными окружения
+
+## 📁 Архитектура
+
+```
+src/
+├── main.py           # Entry point, инициализация приложения
+├── controller.py     # HTTP endpoints
+├── orchestrator.py   # Оркестрация ETL процесса
+├── etl_pipeline.py   # ETL pipeline для полной загрузки данных
+├── api_client.py     # Клиент для ЦБ РФ API
+├── data_handler.py   # Обработка и трансформация данных
+├── repository.py     # Database queries
+├── data_models.py    # Pydantic модели
+└── config.py         # Конфигурация
+```
+
+## 🚀 Установка и запуск
+
+### Локально
+```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+python src/main.py
+```
 
-deactivate
-
+### Docker
+```bash
 docker build -t cbr-etl .
-docker run -d --name cbr-etl-container -p 15333:15333 cbr-etl
-
 docker run -d --name cbr-etl-container --network cbr-network -p 15333:15333 cbr-etl
+docker logs cbr-etl-container
+```
 
-docker logs cbr-etl-container  
+## 🔧 Переменные окружения
 
+```env
+DATABASE_URL=postgresql://user:password@host:5432/cbr_db
+DB_HOST=localhost
+DB_PORT=5432
+POSTGRES_DB=cbr_db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+CBR_API_URL=https://www.cbr-xml-rpc.ru
+PORT=15333
+```
+
+## 📡 API Endpoints
+
+### POST /api/v1/
+Запустить ETL pipeline для определенного набора данных
+
+**Body:**
+```json
+{
+  "name": "string",           // required: currency_rates, credits_stats, loan_rates, money_aggregates, deposit_rates
+  "time_from": "ISO 8601",    // optional: начальная дата
+  "time_to": "ISO 8601"       // optional: конечная дата
+}
+```
+
+**Примеры:**
+```bash
 curl -X POST "http://localhost:15333/api/v1/" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "example_name",
+    "name": "currency_rates",
     "time_from": "2024-01-01T00:00:00",
-    "time_to": "2024-12-31T23:59:59",
-    "location": "Moscow"
+    "time_to": "2024-12-31T23:59:59"
   }'
 
 curl -X POST "http://localhost:15333/api/v1/" \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "credits_stats",
-    "time_from": "2024-01-01T00:00:00",
-    "time_to": "2024-12-31T23:59:59",
-    "location": "Moscow"
-  }'
+  -d '{"name": "credits_stats"}'
+```
 
-  curl -X POST "http://localhost:15333/api/v1/" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "credits_stats"
-  }'
+## 📊 Поддерживаемые метрики
 
- curl -X POST "http://localhost:15333/api/v1/" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "currency_rates"
-  }'
+- `currency_rates` - Курсы иностранных валют
+- `credits_stats` - Статистика по кредитам
+- `loan_rates` - Ставки по кредитам
+- `money_aggregates` - Денежные агрегаты
+- `deposit_rates` - Ставки по депозитам
 
-   curl -X POST "http://localhost:15333/api/v1/" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "money_aggregates"
-  }'
+## 🔄 ETL Pipeline
 
-     curl -X POST "http://localhost:15333/api/v1/" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "deposit_rates"
-  }'
+1. **Extract** - Получение данных из API ЦБ РФ
+2. **Transform** - Обработка и нормализация данных
+3. **Load** - Сохранение в PostgreSQL
 
-       curl -X POST "http://localhost:15333/api/v1/" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "loan_rates"
-  }'
-
-
-  docker exec -it cbr-db-container psql -U postgres -d cbr_db -c "SELECT * FROM economic_data"
-
-  docker exec -it cbr-db-container psql -U postgres -d cbr_db -c "INSERT INTO economic_parameters (parameter_name) VALUES ('currency_rates'), ('credits_stats'), ('loan_rates'), ('money_aggregates'), ('deposit_rates');"
-
-  docker exec -it cbr-db-container psql -U postgres -d cbr_db -c " INSERT INTO regions (region_name) VALUES ('msc'), ('spb'), ('smr'), ('ekt')"
-
-docker exec -it cbr-db-container psql -U postgres -d cbr_db -c "INSERT INTO regions (region_name) SELECT 'region_' || generate_series FROM generate_series(1, 200);"
-
-
-credits_stats до 30 дней, включая ''до востребования'' 2
-credits_stats от 31 до 90 дней 4
-credits_stats от 91 до 180 дней 5
-credits_stats от 181 дня до 1 года 6
-
-currency_rates доллара сша к рублю на конец периода 98
-
-money_aggregates всего 12
-
-deposit_rates "до востребования" 1
-deposit_rates до 30 дней, включая ''до востребования'' 2
-deposit_rates до 30 дней, кроме ''до востребования'' 3
-deposit_rates от 31 до 90 дней 4
-deposit_rates от 91 до 180 дней 5
-deposit_rates от 181 дня до 1 года 6
-
-loan_rates всего 35
-
-
-docker exec -it cbr-db-container psql -U postgres -d cbr_db -c "
-DELETE FROM economic_parameters WHERE parameter_id IN (2, 4, 5, 6, 98, 12, 1, 3, 35);
-
-INSERT INTO economic_parameters (parameter_id, parameter_name) VALUES 
-(2, 'credits_stats до 30 дней, включая \"до востребования\"'),
-(4, 'credits_stats от 31 до 90 дней'),
-(5, 'credits_stats от 91 до 180 дней'),
-(6, 'credits_stats от 181 дня до 1 года'),
-(98, 'currency_rates доллара сша к рублю на конец периода'),
-(12, 'money_aggregates всего'),
-(1, 'deposit_rates \"до востребования\"'),
-(2, 'deposit_rates до 30 дней, включая \"до востребования\"'),
-(3, 'deposit_rates до 30 дней, кроме \"до востребования\"'),
-(4, 'deposit_rates от 31 до 90 дней'),
-(5, 'deposit_rates от 91 до 180 дней'),
-(6, 'deposit_rates от 181 дня до 1 года'),
-(35, 'loan_rates всего');
-"
+Процесс асинхронный и поддерживает обработку больших объемов данных.
